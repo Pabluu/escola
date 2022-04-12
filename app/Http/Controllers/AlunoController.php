@@ -5,13 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Aluno;
 use App\Models\Curso;
+use Illuminate\Support\Facades\DB;
+
 
 class AlunoController extends Controller
 {
+
+    public function listaAlunos(){
+        return DB::table("aluno AS al")
+            ->join('curso AS cs', 'al.curso_id', '=', 'cs.id')
+            ->select('al.*', 'cs.nome AS nome_curso')
+            ->get();
+    }
+
     public function index()
     {
         $aluno = new Aluno();
-        $alunos = Aluno::All();
+        $alunos = $this->listaAlunos();
         $cursos = Curso::All();
         return view("aluno.index", [
             "aluno" => $aluno,
@@ -58,7 +68,7 @@ class AlunoController extends Controller
     public function edit($id)
     {
         $aluno = Aluno::Find($id);
-        $alunos = Aluno::All();
+        $alunos = $this->listaAlunos();
         $cursos = Curso::All();
 
         return view('aluno.index', [
@@ -71,7 +81,6 @@ class AlunoController extends Controller
 
     public function update(Request $request, $id)
     {
-        
     }
 
     /**
