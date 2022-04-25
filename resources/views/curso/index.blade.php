@@ -57,6 +57,12 @@
                 </a>
             </td>
             <td>
+                @if($curso->total_alunos > 0)
+                    <button type="button" onclick="excluir(this);" class='btn btn-danger disabled' >
+                        <i class="bi bi-trash"></i>Excluir
+                    </button>
+
+                @else
                 <form action='/curso/{{$curso->id}}' method='POST'>
                     @csrf
                     <input type='hidden' name='_method' value='DELETE'>
@@ -64,18 +70,18 @@
                         <i class="bi bi-trash"></i>Excluir
                     </button>
                 </form>
+                @endif
             </td>
-            
+
         </tr>
         @endforeach
     </tbody>
 
 </table>
-
 @endsection
 
 <script>
-    function excluir(btn){
+    function excluir(btn) {
         Swal.fire({
             title: "Deseja realmente excluir?",
             "icon": "warning",
@@ -84,8 +90,8 @@
             "confirmButtonText": "Confirmar",
             "confirmButtonColor": "#17882c",
             "cancelButtonColor": "#d33"
-        }).then(function(result){
-            if(result.isConfirmed){
+        }).then(function(result) {
+            if (result.isConfirmed) {
                 $(btn).parents("form").submit();
             }
         });

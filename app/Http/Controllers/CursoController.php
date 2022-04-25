@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 use App\Models\Curso;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
 class CursoController extends Controller{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    public function listCursos(){
+        return DB::table("curso AS c")
+        ->leftJoin('aluno AS a', 'c.id', '=', 'a.curso_id')
+        ->select('c.id', 'c.nome', DB::raw('COUNT(a.id) AS total_alunos'))
+        ->groupBy('c.id', 'c.nome')
+        ->get();
+
+    }
+
     public function index(){
         $curso = new Curso();
-        $cursos = Curso::All();
+        $cursos = $this->listCursos();
 
         return view('curso.index',[
             'curso' => $curso,
@@ -46,7 +52,7 @@ class CursoController extends Controller{
 
     public function edit($id){
         $curso = Curso::Find($id);
-        $cursos = Curso::All();
+        $cursos = $this->listCursos();
         
         return view('curso.index', [
             'curso' => $curso,

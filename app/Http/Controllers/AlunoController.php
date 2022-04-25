@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 class AlunoController extends Controller
 {
 
-    public function listaAlunos(){
+    public function listaAlunos()
+    {
         return DB::table("aluno AS al")
             ->join('curso AS cs', 'al.curso_id', '=', 'cs.id')
             ->select('al.*', 'cs.nome AS nome_curso')
@@ -48,6 +49,11 @@ class AlunoController extends Controller
         $aluno->nome = $request->get('nome');
         $aluno->email = $request->get('email');
         $aluno->curso_id = $request->get('curso_id');
+
+        if ($request->file("foto") != null) {
+            $aluno->foto = $request->file("foto")->store("public/alunos");
+        }
+
         $aluno->save();
 
         $request->session()->flash('status', 'salvo');
